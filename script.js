@@ -1,4 +1,4 @@
- // Game state variables
+// Game state variables
 let money = 0;
 let products = 0;
 let workers = 0;
