@@ -52,7 +52,7 @@ function exportSave() {
 function importSave() {
   const input = document.createElement("input");
   input.type = "file";
-  input.accept = ".txt";
+  input.accept = ".factorysave";
   input.onchange = () => {
     const file = input.files[0];
     const reader = new FileReader();
