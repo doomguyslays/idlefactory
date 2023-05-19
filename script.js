@@ -1,39 +1,78 @@
+// Define the game variables
 let money = 0;
-let productionRate = 1;
-let sellingPrice = 10;
+let ores = 0;
+let miners = 0;
+let worker = 0;
 
-function produce() {
-  money += productionRate;
-  updateMoney();
+// Define the game functions
+function mine() {
+  ores += miners;
+  updateDisplay();
 }
 
-function sell() {
-  if (money > 0) {
-    money -= 1;
-    money += sellingPrice;
-    updateMoney();
+function hireMiner() {
+  const cost = Math.pow(2, miners);
+  if (money >= cost) {
+    money -= cost;
+    miners++;
+    updateDisplay();
   }
 }
 
-function updateMoney() {
-  document.getElementById('money').textContent = money;
+function hireWorker() {
+  const cost = Math.pow(2, worker);
+  if (money >= cost) {
+    money -= cost;
+    worker++;
+    updateDisplay();
+  }
 }
 
-function save() {
+function updateDisplay() {
+  document.getElementById("money").textContent = money;
+  document.getElementById("ores").textContent = ores;
+  document.getElementById("miners").textContent = miners;
+  document.getElementById("workers").textContent = worker;
+}
+
+function exportSave() {
   const saveData = {
     money: money,
-    productionRate: productionRate,
-    sellingPrice: sellingPrice
+    ores: ores,
+    miners: miners,
+    worker: worker
   };
-  localStorage.setItem('saveData', JSON.stringify(saveData));
+  const saveString = btoa(JSON.stringify(saveData));
+  const saveLink = document.createElement("a");
+  saveLink.href = "data:text/plain;charset=utf-8," + encodeURIComponent(saveString);
+  saveLink.download = "save.txt";
+  saveLink.click();
 }
 
-function load() {
-  const saveData = JSON.parse(localStorage.getItem('saveData'));
-  if (saveData) {
-    money = saveData.money;
-    productionRate = saveData.productionRate;
-    sellingPrice = saveData.sellingPrice;
-    updateMoney();
-  }
+function importSave() {
+  const input = document.createElement("input");
+  input.type = "file";
+  input.accept = ".txt";
+  input.onchange = () => {
+    const file = input.files[0];
+    const reader = new FileReader();
+    reader.readAsText(file);
+    reader.onload = () => {
+      const saveString = reader.result;
+      const saveData = JSON.parse(atob(saveString));
+      money = saveData.money;
+      ores = saveData.ores;
+      miners = saveData.miners;
+      worker = saveData.worker;
+      updateDisplay();
+    };
+  };
+  input.click();
 }
+
+// Attach the event handlers
+document.getElementById("mine-button").addEventListener("click", mine);
+document.getElementById("hire-miner-button").addEventListener("click", hireMiner);
+document.getElementById("hire-worker-button").addEventListener("click", hireWorker);
+document.getElementById("export-save-button").addEventListener("click", exportSave);
+document.getElementById("import-save-button
