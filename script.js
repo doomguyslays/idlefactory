@@ -75,4 +75,5 @@ document.getElementById("mine-button").addEventListener("click", mine);
 document.getElementById("hire-miner-button").addEventListener("click", hireMiner);
 document.getElementById("hire-worker-button").addEventListener("click", hireWorker);
 document.getElementById("export-save-button").addEventListener("click", exportSave);
-document.getElementById("import-save-button
+document.getElementById("import-save-button").addEventListener("click", importSave);
+
