@@ -1,7 +1,7 @@
  // Game state variables
-let cash = 0;
-let ores = 0;
-let miners = 0;
+let money = 0;
+let products = 0;
+let workers = 0;
 
 // DOM element variables
 const moneyElement = document.getElementById("money");
