@@ -2,11 +2,16 @@
 let money = 0;
 let ores = 0;
 let miners = 0;
-let worker = 0;
+let workers = 0;
 
 // Define the game functions
 function mine() {
   ores += miners;
+  updateDisplay();
+}
+
+function produce() {
+  money += ores;
   updateDisplay();
 }
 
@@ -20,10 +25,10 @@ function hireMiner() {
 }
 
 function hireWorker() {
-  const cost = Math.pow(2, worker);
+  const cost = Math.pow(2, workers);
   if (money >= cost) {
     money -= cost;
-    worker++;
+    workers++;
     updateDisplay();
   }
 }
@@ -32,7 +37,7 @@ function updateDisplay() {
   document.getElementById("money").textContent = money;
   document.getElementById("ores").textContent = ores;
   document.getElementById("miners").textContent = miners;
-  document.getElementById("workers").textContent = worker;
+  document.getElementById("workers").textContent = workers;
 }
 
 function exportSave() {
@@ -40,7 +45,7 @@ function exportSave() {
     money: money,
     ores: ores,
     miners: miners,
-    worker: worker
+    workers: workers
   };
   const saveString = btoa(JSON.stringify(saveData));
   const saveLink = document.createElement("a");
@@ -52,7 +57,7 @@ function exportSave() {
 function importSave() {
   const input = document.createElement("input");
   input.type = "file";
-  input.accept = ".factorysave";
+  input.accept = ".txt";
   input.onchange = () => {
     const file = input.files[0];
     const reader = new FileReader();
@@ -63,7 +68,7 @@ function importSave() {
       money = saveData.money;
       ores = saveData.ores;
       miners = saveData.miners;
-      worker = saveData.worker;
+      workers = saveData.workers;
       updateDisplay();
     };
   };
@@ -72,8 +77,8 @@ function importSave() {
 
 // Attach the event handlers
 document.getElementById("mine-button").addEventListener("click", mine);
+document.getElementById("produce-button").addEventListener("click", produce);
 document.getElementById("hire-miner-button").addEventListener("click", hireMiner);
 document.getElementById("hire-worker-button").addEventListener("click", hireWorker);
 document.getElementById("export-save-button").addEventListener("click", exportSave);
 document.getElementById("import-save-button").addEventListener("click", importSave);
-
