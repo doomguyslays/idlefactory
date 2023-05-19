@@ -1,84 +1,123 @@
-// Define the game variables
-let money = 0;
+ // Game state variables
+let cash = 0;
 let ores = 0;
 let miners = 0;
-let workers = 0;
 
-// Define the game functions
-function mine() {
-  ores += miners;
-  updateDisplay();
+// DOM element variables
+const moneyElement = document.getElementById("money");
+const productsElement = document.getElementById("products");
+const workersElement = document.getElementById("workers");
+const produceButton = document.getElementById("produceButton");
+const sellButton = document.getElementById("sellButton");
+const hireButton = document.getElementById("hireButton");
+const saveButton = document.getElementById("saveButton");
+const loadButton = document.getElementById("loadButton");
+const backgroundMusic = document.getElementById("backgroundMusic");
+
+// Load game state from local storage
+function loadGameState() {
+  if (localStorage.getItem("money")) {
+    money = parseInt(localStorage.getItem("money"));
+    moneyElement.textContent = money;
+  }
+  if (localStorage.getItem("products")) {
+    products = parseInt(localStorage.getItem("products"));
+    productsElement.textContent = products;
+  }
+  if (localStorage.getItem("workers")) {
+    workers = parseInt(localStorage.getItem("workers"));
+    workersElement.textContent = workers;
+  }
+  alert("Game loaded!");
 }
 
-function produce() {
-  money += ores;
-  updateDisplay();
+// Save game state to local storage
+function saveGameState() {
+  localStorage.setItem("money", money);
+  localStorage.setItem("products", products);
+  localStorage.setItem("workers", workers);
+  alert("Game saved!");
 }
 
-function hireMiner() {
-  const cost = Math.pow(2, miners);
-  if (money >= cost) {
-    money -= cost;
-    miners++;
-    updateDisplay();
+// Update game state and UI with new values
+function updateGameState() {
+  animateValue(moneyElement, money);
+  animateValue(productsElement, products);
+  animateValue(workersElement, workers);
+}
+
+// Produce products
+function produce(amount) {
+  products += amount;
+  updateGameState();
+}
+
+// Sell products
+function sell() {
+  if (products > 0) {
+    products--;
+    money += 10;
+    updateGameState();
   }
 }
 
+// Hire a worker
 function hireWorker() {
-  const cost = Math.pow(2, workers);
-  if (money >= cost) {
-    money -= cost;
+  if (money >= 100) {
+    money -= 100;
     workers++;
-    updateDisplay();
+    updateGameState();
   }
 }
 
-function updateDisplay() {
-  document.getElementById("money").textContent = money;
-  document.getElementById("ores").textContent = ores;
-  document.getElementById("miners").textContent = miners;
-  document.getElementById("workers").textContent = workers;
+// Function to produce products over time
+function startProduction() {
+  setInterval(() => {
+    produce(workers);
+  }, 1000);
 }
 
-function exportSave() {
-  const saveData = {
-    money: money,
-    ores: ores,
-    miners: miners,
-    workers: workers
-  };
-  const saveString = btoa(JSON.stringify(saveData));
-  const saveLink = document.createElement("a");
-  saveLink.href = "data:text/plain;charset=utf-8," + encodeURIComponent(saveString);
-  saveLink.download = "save.txt";
-  saveLink.click();
+// Function to earn money over time
+function startEarning() {
+  setInterval(() => {
+    money += workers * 10;
+    updateGameState();
+  }, 3000);
 }
 
-function importSave() {
-  const input = document.createElement("input");
-  input.type = "file";
-  input.accept = ".txt";
-  input.onchange = () => {
-    const file = input.files[0];
-    const reader = new FileReader();
-    reader.readAsText(file);
-    reader.onload = () => {
-      const saveString = reader.result;
-      const saveData = JSON.parse(atob(saveString));
-      money = saveData.money;
-      ores = saveData.ores;
-      miners = saveData.miners;
-      workers = saveData.workers;
-      updateDisplay();
-    };
-  };
-  input.click();
-}
+// Event listeners for buttons
+produceButton.addEventListener("click", () => produce(1));
+sellButton.addEventListener("click", sell);
+hireButton.addEventListener("click", hireWorker);
+saveButton.addEventListener("click", saveGameState);
+loadButton.addEventListener("click", loadGameState);
 
-// Attach the event handlers
-document.getElementById("mine-button").addEventListener("click", mine);
-document.getElementById("produce-button").addEventListener("click", produce);
-document.getElementById("hire-miner-button").addEventListener("click", hireMiner);
-document.getElementById("hire-worker-button").addEventListener("click", hireWorker);
-document.getElementById("export-save-button").addEventListener("click", exportSave);
-document.getElementById("import-save-button").addEventListener("click", importSave);
+// Load game state, start playing music, and start production and earning
+loadGameState();
+backgroundMusic.play();
+startProduction();
+startEarning();
+
+// Animate a DOM element's value from its current value to a new value
+function animateValue(element, newValue) {
+  const startValue = parseInt(element.textContent);
+  const endValue = newValue;
+  const duration = 1000; // in milliseconds
+  const startTime = new Date().getTime();
+  const endTime = startTime + duration;
+
+  function update() {
+    const currentTime = new Date().getTime();
+    const remainingTime = Math.max(endTime - currentTime, 0);
+    const elapsedTime = duration - remainingTime;
+    const currentValue = Math.round(
+      startValue + (endValue - startValue) * elapsedTime / duration
+    );
+    element.textContent = currentValue;
+    if (currentTime < endTime) {
+      requestAnimationFrame(update);
+    }
+  }
+
+  requestAnimationFrame(update);
+}
