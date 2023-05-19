@@ -94,7 +94,7 @@ loadButton.addEventListener("click", loadGameState);
 
 // Load game state, start playing music, and start production and earning
 loadGameState();
-backgroundMusic.play();
+backgroundMusic.play(true);
 startProduction();
 startEarning();
 
