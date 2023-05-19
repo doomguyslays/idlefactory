@@ -1,71 +1,16 @@
 <!DOCTYPE html>
 <html>
-<head>
+  <head>
     <title>Idle Factory Game</title>
-    <style>
-        /* Style for buttons */
-        button {
-            background-color: #4CAF50;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            margin: 10px;
-        }
-
-        button:hover {
-            background-color: #3e8e41;
-        }
-    </style>
-</head>
-<body>
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
     <h1>Idle Factory Game</h1>
-
-    <!-- Buttons to produce minerals and hire miners -->
-    <button id="produceBtn">Produce Minerals</button>
-    <button id="hireBtn">Hire Miner</button>
-
-    <script>
-        // Function to produce minerals
-        function produceMinerals() {
-            // Get current mineral count
-            let minerals = localStorage.getItem("minerals");
-            if (!minerals) {
-                minerals = 0;
-            }
-            // Produce minerals and update count
-            minerals += 10;
-            localStorage.setItem("minerals", minerals);
-            alert("Produced 10 minerals!");
-        }
-
-        // Function to hire miners
-        function hireMiner() {
-            // Check if there are enough minerals to hire a miner
-            let minerals = localStorage.getItem("minerals");
-            if (!minerals) {
-                minerals = 0;
-            }
-            if (minerals < 50) {
-                alert("Not enough minerals to hire a miner!");
-                return;
-            }
-            // Deduct minerals and add miner
-            minerals -= 50;
-            localStorage.setItem("minerals", minerals);
-            let miners = localStorage.getItem("miners");
-            if (!miners) {
-                miners = 0;
-            }
-            miners++;
-            localStorage.setItem("miners", miners);
-            alert("Hired a miner!");
-        }
-
-        // Add event listeners to buttons
-        document.getElementById("produceBtn").addEventListener("click", produceMinerals);
-        document.getElementById("hireBtn").addEventListener("click", hireMiner);
-    </script>
-</body>
+    <p>Money: $<span id="money">0</span></p>
+    <button onclick="produce()">Produce</button>
+    <button onclick="sell()">Sell</button>
+    <button onclick="save()">Save</button>
+    <button onclick="load()">Load</button>
+    <script src="script.js"></script>
+  </body>
 </html>
