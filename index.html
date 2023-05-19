@@ -3,120 +3,69 @@
 <head>
     <title>Idle Factory Game</title>
     <style>
-        /* Your CSS styling goes here */
+        /* Style for buttons */
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 10px;
+        }
+
+        button:hover {
+            background-color: #3e8e41;
+        }
     </style>
 </head>
 <body>
     <h1>Idle Factory Game</h1>
-    <div id="resources">
-        <h2>Resources:</h2>
-        <p id="money">Money: $0</p>
-        <p id="production">Production: 0 units/sec</p>
-    </div>
-    <div id="buttons">
-        <button onclick="produce()">Produce</button>
-        <button onclick="sell()">Sell</button>
-        <button onclick="hire()">Hire</button>
-        <button onclick="exportSave()">Export Save</button>
-        <button onclick="importSave()">Import Save</button>
-        <button onclick="upgrade()">Upgrade Machines</button>
-    </div>
+
+    <!-- Buttons to produce minerals and hire miners -->
+    <button id="produceBtn">Produce Minerals</button>
+    <button id="hireBtn">Hire Miner</button>
 
     <script>
-        // Variables
-        let money = 0;
-        let production = 0;
-        let machines = 1;
-
-        // Update resource display
-        function updateDisplay() {
-            document.getElementById("money").innerText = "Money: $" + money;
-            document.getElementById("production").innerText = "Production: " + production + " units/sec";
-        }
-
-        // Produce resources
-        function produce() {
-            money += machines;
-            updateDisplay();
-        }
-
-        // Sell resources
-        function sell() {
-            if (money >= 10) {
-                money -= 10;
-                production += 1;
-                updateDisplay();
-            } else {
-                alert("Not enough money to sell!");
+        // Function to produce minerals
+        function produceMinerals() {
+            // Get current mineral count
+            let minerals = localStorage.getItem("minerals");
+            if (!minerals) {
+                minerals = 0;
             }
+            // Produce minerals and update count
+            minerals += 10;
+            localStorage.setItem("minerals", minerals);
+            alert("Produced 10 minerals!");
         }
 
-        // Hire more workers
-        function hire() {
-            const cost = Math.floor(Math.pow(1.1, machines) * 100);
-            if (money >= cost) {
-                money -= cost;
-                machines++;
-                updateDisplay();
-            } else {
-                alert("Not enough money to hire!");
+        // Function to hire miners
+        function hireMiner() {
+            // Check if there are enough minerals to hire a miner
+            let minerals = localStorage.getItem("minerals");
+            if (!minerals) {
+                minerals = 0;
             }
-        }
-
-        // Upgrade machines
-        function upgrade() {
-            const cost = Math.floor(Math.pow(1.2, machines) * 500);
-            if (money >= cost) {
-                money -= cost;
-                production += machines * 2;
-                updateDisplay();
-            } else {
-                alert("Not enough money to upgrade!");
+            if (minerals < 50) {
+                alert("Not enough minerals to hire a miner!");
+                return;
             }
-        }
-
-        // Export save
-        function exportSave() {
-            const saveData = {
-                money: money,
-                production: production,
-                machines: machines
-            };
-            const saveJSON = JSON.stringify(saveData);
-            prompt("Copy the save data:", saveJSON);
-        }
-
-        // Import save
-        function importSave() {
-            const saveJSON = prompt("Paste the save data:");
-            try {
-                const saveData = JSON.parse(saveJSON);
-                money = saveData.money;
-                production = saveData.production;
-                machines = saveData.machines;
-                updateDisplay();
-            } catch (error) {
-                alert("Invalid save data!");
+            // Deduct minerals and add miner
+            minerals -= 50;
+            localStorage.setItem("minerals", minerals);
+            let miners = localStorage.getItem("miners");
+            if (!miners) {
+                miners = 0;
             }
+            miners++;
+            localStorage.setItem("miners", miners);
+            alert("Hired a miner!");
         }
 
-        // Automatically identify the platform
-        function detectPlatform() {
-            const platform = navigator.platform.toLowerCase();
-            if (platform.includes("win")) {
-                // Windows
-                document.body.style.background = "lightblue";
-            } else if (platform.includes("mac")) {
-                // Mac
-                document.body.style.background = "lightgray";
-            } else if (platform.includes("android")) {
-                // Android
-                document.body.style.background = "lightgreen";
-            }
-        }
-
-        // Call detectPlatform on page load
-        detectPlatform();
+        // Add event listeners to buttons
+        document.getElementById("produceBtn").addEventListener("click", produceMinerals);
+        document.getElementById("hireBtn").addEventListener("click", hireMiner);
     </script>
 </body>
 </html>
